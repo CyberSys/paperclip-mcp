@@ -1,8 +1,8 @@
 {
   "$schema": "https://modelcontextprotocol.io/schemas/registry/server.json",
   "name": "paperclip-mcp",
-  "description": "MCP server for the Paperclip AI agent orchestration platform. Manage issues, agents, goals, approvals, and costs via natural language.",
-  "version": "0.1.0",
+  "description": "Operator-layer MCP server for the Paperclip AI agent orchestration platform: issues, agents, goals, projects, approvals, costs, routines, decisions and pipelines via natural language.",
+  "version": "0.2.0",
   "license": "MIT",
   "installation": {
     "type": "pypi",
@@ -13,9 +13,15 @@
     "args": []
   },
   "environment": {
+    "PAPERCLIP_API_URL": {
+      "description": "Paperclip base URL; '/api' is appended when missing. Default: http://localhost:3100",
+      "required": false,
+      "secret": false,
+      "default": "http://localhost:3100"
+    },
     "PAPERCLIP_API_KEY": {
-      "description": "Agent API key — generate in Paperclip UI: Settings → API Keys → New Key.",
-      "required": true,
+      "description": "Board API key (pcp_board_..., full operator access) or agent API key. Optional only on local_trusted deployments.",
+      "required": false,
       "secret": true
     },
     "PAPERCLIP_COMPANY_ID": {
@@ -23,21 +29,44 @@
       "required": true,
       "secret": false
     },
-    "PAPERCLIP_BASE_URL": {
-      "description": "Base URL of the Paperclip API. Default: http://localhost:3100/api",
+    "PAPERCLIP_AGENT_ID": {
+      "description": "Default agent UUID for checkout_issue when the key is a board key.",
       "required": false,
-      "secret": false,
-      "default": "http://localhost:3100/api"
+      "secret": false
+    },
+    "PAPERCLIP_RUN_ID": {
+      "description": "Real heartbeat run id forwarded as X-Paperclip-Run-Id on writes. Never fabricate one.",
+      "required": false,
+      "secret": false
     }
   },
   "capabilities": {
     "tools": [
-      "list_issues", "get_issue", "create_issue", "update_issue",
-      "checkout_issue", "release_issue", "comment_on_issue", "delete_issue",
-      "list_agents", "get_agent", "invoke_agent_heartbeat",
-      "list_goals", "create_goal", "update_goal",
-      "list_approvals", "approve", "reject", "request_approval_revision",
-      "get_cost_summary", "get_dashboard", "list_activity"
+      "whoami", "get_health", "get_company", "list_companies", "create_board_api_key",
+      "list_secret_catalog", "api_request",
+      "list_issues", "get_issue", "get_heartbeat_context", "create_issue", "update_issue", "delete_issue",
+      "checkout_issue", "release_issue", "list_comments", "comment_on_issue", "list_labels",
+      "list_documents", "get_document", "upsert_document", "list_interactions",
+      "create_interaction", "accept_interaction", "reject_interaction", "respond_to_interaction",
+      "get_issue_activity", "get_issue_runs", "get_issue_cost_summary", "list_issue_approvals",
+      "list_agents", "get_agent", "get_my_inbox", "list_company_skills", "wake_agent",
+      "invoke_agent_heartbeat", "pause_agent", "resume_agent", "clear_agent_error",
+      "terminate_agent", "approve_agent", "create_agent", "create_agent_hire", "update_agent",
+      "set_agent_budget", "create_agent_api_key", "list_agent_runs", "get_run", "cancel_run",
+      "list_live_runs",
+      "list_goals", "get_goal", "create_goal", "update_goal", "delete_goal",
+      "list_projects", "get_project", "create_project", "update_project",
+      "list_approvals", "get_approval", "create_approval", "approve", "reject",
+      "request_approval_revision", "resubmit_approval", "list_approval_issues",
+      "list_approval_comments", "add_approval_comment",
+      "get_dashboard", "get_cost_summary", "get_cost_breakdown", "get_cost_window_spend",
+      "get_budget_overview", "set_company_budget", "list_activity", "get_attention_feed",
+      "get_sidebar_badges",
+      "list_routines", "get_routine", "create_routine", "update_routine", "run_routine",
+      "list_routine_runs", "create_routine_trigger",
+      "list_decisions", "get_decision", "decide_decision", "dismiss_decision",
+      "list_pipelines", "get_pipeline", "list_pipeline_attention", "list_pipeline_cases",
+      "ingest_pipeline_case", "review_pipeline_case"
     ]
   }
 }

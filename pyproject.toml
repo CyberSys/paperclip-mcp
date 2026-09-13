@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "paperclip-mcp"
-version = "0.1.0"
-description = "MCP server for the Paperclip AI agent orchestration platform"
+version = "0.2.0"
+description = "MCP server for the Paperclip AI agent orchestration platform (operator layer)"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.10"
@@ -52,7 +52,10 @@ target-version = "py310"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "ANN"]
-ignore = ["ANN101", "ANN102"]
+ignore = ["ANN401"]  # tools legitimately pass/return JSON as Any
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["ANN"]
 
 [tool.mypy]
 python_version = "3.10"
@@ -62,3 +65,4 @@ ignore_missing_imports = true
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+pythonpath = ["."]
